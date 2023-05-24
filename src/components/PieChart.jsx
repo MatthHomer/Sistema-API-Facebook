@@ -13,7 +13,7 @@ const PieChart = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          'https://graph.facebook.com/v16.0/act_575139636836823/insights?time_increment=1&date_preset{last_year}&level=adset&fields=campaign_id,campaign_name,account_name,adset_name,impressions,spend,clicks,inline_link_clicks,website_ctr,reach&level=adset&breakdowns=country,region&limit=5000&access_token=EAAICOnOwUhIBAH9WgRPnvtZCr6lqsbco1YzLZCsqLTW7JuyF3agYmLhYZBU2GEG1QcF6fytKJcv76aVZA1tIZAppqeVID6LCraGqttEo9E5sEDCejZAjJ8QT75RxehLHfHao1zZBdGzPb7bLlfpzXXNEr9kWneZBrXeZCLlELw3cvZBhFyKw1TfnZAT'
+          'https://graph.facebook.com/v16.0/act_960375240984222/insights?time_increment=1&date_preset{last_year}&level=adset&fields=campaign_id,cpp,campaign_name,account_name,adset_name,impressions,spend,clicks,inline_link_clicks,website_ctr,reach&level=adset&breakdowns=country,region&limit=5000&access_token=EAAQ3iloCnogBAFLuT77GCB4K9LYNqZB5mCZCYf3qu1SQ4ABNn6pEaALB1JJTWY7wuXahZCNSamld2YWXuZCsVUi8cr7wynDiWUmY1dlZA5ZApHPO9XjCm5DeIX9heYz2qLe5z3V0xlF2mUuzqMFxgZC2GjHdnr62MxDjafmKgpLZAOmNxIx0YXHb'
         );
 
         const json = await response.json();
