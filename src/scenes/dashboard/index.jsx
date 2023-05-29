@@ -405,7 +405,7 @@ const Dashboard = () => {
             Quantidade de vendas
           </Typography>
           <Box height="280px" mt="-20px">
-            <BarChart isDashboard={true} />
+            <BarChart isDashboard={true} selectedAPI={selectedAPI}/>
           </Box>
         </Box>
 

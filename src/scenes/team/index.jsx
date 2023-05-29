@@ -1,7 +1,7 @@
+import React, { useEffect, useState } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataTeam } from "../../data/mockData";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
@@ -14,21 +14,9 @@ const Team = () => {
     { field: "id", headerName: "ID" },
     {
       field: "name",
-      headerName: "Name",
+      headerName: "Nome",
       flex: 1,
       cellClassName: "name-column--cell",
-    },
-    {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      headerAlign: "left",
-      align: "left",
-    },
-    {
-      field: "phone",
-      headerName: "Phone Number",
-      flex: 1,
     },
     {
       field: "email",
@@ -36,10 +24,44 @@ const Team = () => {
       flex: 1,
     },
     {
-      field: "accessLevel",
-      headerName: "Access Level",
+      field: "senha",
+      headerName: "Senha",
+      type: "number",
+      headerAlign: "left",
+      align: "left",
+    },
+    {
+      field: "phone",
+      headerName: "Contato",
       flex: 1,
-      renderCell: ({ row: { access } }) => {
+    },
+    {
+      field: "accessLevel",
+      headerName: "Cargo",
+      flex: 1,
+      renderCell: ({ row }) => {
+        const { accessLevel } = row;
+        let cargoIcon, cargoColor;
+
+        switch (accessLevel) {
+          case "Admin":
+            cargoIcon = <AdminPanelSettingsOutlinedIcon />;
+            cargoColor = colors.greenAccent[600];
+            break;
+          case "Gerente":
+            cargoIcon = <SecurityOutlinedIcon />;
+            cargoColor = colors.greenAccent[700];
+            break;
+          case "Usuário":
+            cargoIcon = <LockOpenOutlinedIcon />;
+            cargoColor = colors.greenAccent[700];
+            break;
+          default:
+            cargoIcon = null;
+            cargoColor = colors.greenAccent[700];
+            break;
+        }
+
         return (
           <Box
             width="60%"
@@ -47,26 +69,35 @@ const Team = () => {
             p="5px"
             display="flex"
             justifyContent="center"
-            backgroundColor={
-              access === "admin"
-                ? colors.greenAccent[600]
-                : access === "manager"
-                ? colors.greenAccent[700]
-                : colors.greenAccent[700]
-            }
+            backgroundColor={cargoColor}
             borderRadius="4px"
           >
-            {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
-            {access === "manager" && <SecurityOutlinedIcon />}
-            {access === "user" && <LockOpenOutlinedIcon />}
+            {cargoIcon}
             <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-              {access}
+              {accessLevel}
             </Typography>
           </Box>
         );
       },
     },
   ];
+
+  const [formData, setFormData] = useState([]);
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("formData");
+    const parsedData = storedData ? JSON.parse(storedData) : [];
+    setFormData(parsedData);
+  }, []);
+
+  const mappedData = formData.map((data, index) => ({
+    id: index + 1,
+    name: data.nome,
+    senha: data.senha,
+    phone: data.contato,
+    email: data.email,
+    accessLevel: data.cargo,
+  }));
 
   return (
     <Box m="20px">
@@ -82,25 +113,22 @@ const Team = () => {
             borderBottom: "none",
           },
           "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
-          },
-          "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
+            color: colors.greenAccent[700],
+            fontWeight: "bold",
+            "&:hover": {
+              cursor: "pointer",
+              color: colors.greenAccent[400],
+            },
           },
         }}
       >
-        <DataGrid checkboxSelection rows={mockDataTeam} columns={columns} />
+        <DataGrid
+          rows={mappedData}
+          columns={columns}
+          pageSize={10}
+          rowsPerPageOptions={[10]}
+          disableSelectionOnClick
+        />
       </Box>
     </Box>
   );
