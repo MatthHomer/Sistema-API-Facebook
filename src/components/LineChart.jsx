@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material';
 import { ResponsiveLine } from '@nivo/line';
 import { tokens } from '../theme';
 
-const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
+const LineChart = ({ isCustomLineColors = false, isDashboard = false, selectedAPI }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -11,11 +11,10 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch(
-          'https://graph.facebook.com/v16.0/act_960375240984222/insights?time_increment=1&date_preset{last_year}&level=adset&fields=campaign_id,cpp,campaign_name,account_name,adset_name,impressions,spend,clicks,inline_link_clicks,website_ctr,reach&level=adset&breakdowns=country,region&limit=5000&access_token=EAAQ3iloCnogBAFLuT77GCB4K9LYNqZB5mCZCYf3qu1SQ4ABNn6pEaALB1JJTWY7wuXahZCNSamld2YWXuZCsVUi8cr7wynDiWUmY1dlZA5ZApHPO9XjCm5DeIX9heYz2qLe5z3V0xlF2mUuzqMFxgZC2GjHdnr62MxDjafmKgpLZAOmNxIx0YXHb'
-        );
+      if (!selectedAPI) return;
 
+      try {
+        const response = await fetch(selectedAPI.apiLink);
         const json = await response.json();
 
         if (Array.isArray(json.data) && json.data.length > 0) {
@@ -52,8 +51,11 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
       }
     };
 
+    console.log(selectedAPI);
+
     fetchData();
-  }, []);
+  }, [selectedAPI]);
+
 
   return (
     <ResponsiveLine

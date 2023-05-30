@@ -163,14 +163,14 @@ const Sidebar = () => {
               Páginas
             </Typography>
             <Item
-              title="Configuração"
+              title="Configurações"
               to="/configuração"
               icon={<SettingsIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Formulário de perfil"
+              title="Criar Usuários"
               to="/form"
               icon={<PersonOutlinedIcon />}
               selected={selected}

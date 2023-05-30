@@ -4,6 +4,7 @@ import { ResponsiveBar } from '@nivo/bar';
 import { tokens } from '../theme';
 
 const BarChart = ({ isDashboard = false, selectedAPI }) => {
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 

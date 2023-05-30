@@ -226,7 +226,7 @@ const Dashboard = () => {
             </Box>
           </Box>
           <Box height="250px" m="-20px 0 0 0">
-            <LineChart isDashboard={true} />
+            <LineChart isDashboard={true} selectedAPI={selectedAPI}/>
           </Box>
         </Box>
 
@@ -319,7 +319,7 @@ const Dashboard = () => {
           </Typography>
 
           <Box height="200px" >
-            <PieChart />
+            <PieChart selectedAPI={selectedAPI}/>
           </Box>
 
           <Box
