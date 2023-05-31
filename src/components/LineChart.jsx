@@ -100,7 +100,7 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false, selectedAP
         },
         tooltip: {
           container: {
-            color: colors.primary[500],
+            color: colors.primary[5100],
           },
         },
       }}
@@ -130,7 +130,7 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false, selectedAP
       axisLeft={{
         orient: 'left',
         tickValues: 5,
-        tickSize: 3,
+        tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
         legend: isDashboard ? undefined : 'count',
@@ -139,7 +139,7 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false, selectedAP
       }}
       enableGridX={false}
       enableGridY={false}
-      pointSize={8}
+      pointSize={10}
       pointColor={{ theme: 'background' }}
       pointBorderWidth={2}
       pointBorderColor={{ from: 'serieColor' }}

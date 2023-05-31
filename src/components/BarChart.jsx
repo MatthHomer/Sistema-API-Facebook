@@ -4,7 +4,6 @@ import { ResponsiveBar } from '@nivo/bar';
 import { tokens } from '../theme';
 
 const BarChart = ({ isDashboard = false, selectedAPI }) => {
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -19,28 +18,10 @@ const BarChart = ({ isDashboard = false, selectedAPI }) => {
         const json = await response.json();
 
         if (Array.isArray(json.data) && json.data.length > 0) {
-          const modifiedData = json.data.reduce((acc, item) => {
-            const dateStart = item.date_start.substr(0, 7);
-            const impressions = Number(item.impressions);
-            const clicks = Number(item.clicks);
-
-            if (acc[dateStart]) {
-              acc[dateStart].impressions += impressions;
-              acc[dateStart].clicks += clicks;
-            } else {
-              acc[dateStart] = {
-                impressions,
-                clicks,
-              };
-            }
-
-            return acc;
-          }, {});
-
-          const transformedData = Object.entries(modifiedData).map(([date, { impressions, clicks }]) => ({
-            date_start: date,
-            impressions,
-            clicks,
+          const transformedData = json.data.map(item => ({
+            date_start: item.date_start.substr(0, 10),
+            impressions: Number(item.impressions),
+            clicks: Number(item.clicks),
           }));
 
           setData(transformedData);
@@ -54,6 +35,15 @@ const BarChart = ({ isDashboard = false, selectedAPI }) => {
 
     fetchData();
   }, [selectedAPI]);
+
+  const formatXAxisTick = tickValue => {
+    
+    const date = new Date(tickValue);
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+  
+    return `${day} ${month}`;
+  };
 
   return (
     <ResponsiveBar
@@ -93,26 +83,6 @@ const BarChart = ({ isDashboard = false, selectedAPI }) => {
       valueScale={{ type: 'linear' }}
       indexScale={{ type: 'band', round: true }}
       colors={{ scheme: 'nivo' }}
-      defs={[
-        {
-          id: 'dots',
-          type: 'patternDots',
-          background: 'inherit',
-          color: '#31bcb2',
-          size: 4,
-          padding: 1,
-          stagger: true,
-        },
-        {
-          id: 'lines',
-          type: 'patternLines',
-          background: 'inherit',
-          color: '#eed312',
-          rotation: -45,
-          lineWidth: 6,
-          spacing: 10,
-        },
-      ]}
       borderColor={{
         from: 'color',
         modifiers: [['darker', '1.6']],
@@ -120,22 +90,26 @@ const BarChart = ({ isDashboard = false, selectedAPI }) => {
       axisTop={null}
       axisRight={null}
       axisBottom={{
-        tickSize: 5,
+        tickSize: 10,
         tickPadding: 5,
-        tickRotation: 0,
-        legend: isDashboard ? undefined : 'Date', // changed
+        tickRotation: 35,
+        legend: isDashboard ? undefined : 'Date',
         legendPosition: 'middle',
         legendOffset: 32,
+        format: formatXAxisTick
       }}
       axisLeft={{
+        orient: 'left',
         tickSize: 5,
+        tickValues: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : 'Count', // changed
-        legendPosition: 'middle',
+        legend: isDashboard ? undefined : 'Count',
         legendOffset: -40,
+        legendPosition: 'middle',
       }}
       enableLabel={true}
+      enableGridY={false}
       labelSkipWidth={12}
       labelSkipHeight={12}
       labelTextColor={{
@@ -170,6 +144,7 @@ const BarChart = ({ isDashboard = false, selectedAPI }) => {
       barAriaLabel={function (e) {
         return e.id + ': ' + e.formattedValue + ' in date: ' + e.indexValue;
       }}
+      groupMode="grouped"
     />
   );
 };

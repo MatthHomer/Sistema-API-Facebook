@@ -11,9 +11,10 @@ const FormPage = () => {
   const [formValues, setFormValues] = useState({
     companyName: "",
     apiDate: "",
-    apiLink: "",
     apiName: "",
     apiColab: "",
+    actValue: "",
+    tokenValue: "",
   });
 
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -27,10 +28,11 @@ const FormPage = () => {
     const newApi = {
       id: Date.now(),
       companyName: values.companyName,
-      apiLink: values.apiLink,
+      apiLink: generateApiLink(values.actValue, values.tokenValue),
       apiName: values.apiName,
       apiDate: values.apiDate,
       apiColab: values.apiColab,
+      isDefault: false, // Adicionado o valor padrão para isDefault
     };
 
     const updatedApis = [...apis, newApi];
@@ -43,9 +45,10 @@ const FormPage = () => {
     setFormValues({
       companyName: "",
       apiDate: "",
-      apiLink: "",
       apiName: "",
       apiColab: "",
+      actValue: "",
+      tokenValue: "",
     });
   };
 
@@ -61,6 +64,22 @@ const FormPage = () => {
         return { ...api, [params.field]: params.value };
       }
       return api;
+    });
+
+    localStorage.setItem('apis', JSON.stringify(updatedApis));
+    setApis(updatedApis);
+  };
+
+  const generateApiLink = (actValue, tokenValue) => {
+    return `https://graph.facebook.com/v17.0/act_${actValue}/insights?time_increment=1&date_preset{last_year}&level=adset&fields=campaign_id,cpp,campaign_name,account_name,adset_name,impressions,spend,clicks,inline_link_clicks,website_ctr,reach&level=adset&breakdowns=country,region&limit=5000&access_token=${tokenValue}`;
+  };
+
+  const handleSetDefaultAPI = (id) => {
+    const updatedApis = apis.map((api) => {
+      if (api.id === id) {
+        return { ...api, isDefault: true };
+      }
+      return { ...api, isDefault: false };
     });
 
     localStorage.setItem('apis', JSON.stringify(updatedApis));
@@ -84,6 +103,19 @@ const FormPage = () => {
         </Button>
       ),
     },
+    {
+      field: 'setDefault',
+      headerName: 'API Padrão',
+      width: 150,
+      renderCell: (params) => (
+        <Button
+          variant={params.row.isDefault ? 'contained' : 'outlined'}
+          onClick={() => handleSetDefaultAPI(params.row.id)}
+        >
+          Padrão
+        </Button>
+      ),
+    },
   ];
 
   return (
@@ -93,7 +125,6 @@ const FormPage = () => {
       <Formik
         onSubmit={handleSubmit}
         initialValues={formValues}
-        validationSchema={checkoutSchema}
       >
         {({
           values,
@@ -160,13 +191,24 @@ const FormPage = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                type="link"
-                label="Link da API"
+                type="text"
+                label="Número da ID"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.apiLink}
-                name="apiLink"
-                sx={{ gridColumn: "span 4" }}
+                value={values.actValue}
+                name="actValue"
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Token"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.tokenValue}
+                name="tokenValue"
+                sx={{ gridColumn: "span 2" }}
               />
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
@@ -195,12 +237,5 @@ const FormPage = () => {
     </Box>
   );
 };
-
-const checkoutSchema = yup.object().shape({
-  companyName: yup.string().required("required"),
-  apiName: yup.string().required("required"),
-  apiDate: yup.string().required("required"),
-  apiLink: yup.string().required("required"),
-});
 
 export default FormPage;
