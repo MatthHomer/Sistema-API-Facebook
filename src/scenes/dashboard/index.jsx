@@ -26,8 +26,12 @@ const Dashboard = () => {
   useEffect(() => {
     const apis = JSON.parse(localStorage.getItem('apis')) || [];
     setApiOptions(apis);
-  }, []);
 
+      // Encontrar a API padrão e definir como selecionada
+      const defaultApi = apis.find((api) => api.isDefault);
+      setSelectedAPI(defaultApi);
+    }, []);
+  
   useEffect(() => {
     fetchData();
   }, [selectedAPI]);
