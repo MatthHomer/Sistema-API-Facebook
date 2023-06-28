@@ -18,6 +18,7 @@ const BarChart = ({ isDashboard = false, selectedAPI }) => {
         const json = await response.json();
 
         if (Array.isArray(json.data) && json.data.length > 0) {
+<<<<<<< HEAD
           const transformedData = json.data
             .map(item => ({
               date_start: item.date_start.substr(0, 10),
@@ -25,6 +26,13 @@ const BarChart = ({ isDashboard = false, selectedAPI }) => {
               clicks: Number(item.clicks),
             }))
             .filter(item => item.date_start && item.impressions && item.clicks);
+=======
+          const transformedData = json.data.map(item => ({
+            date_start: item.date_start.substr(0, 10),
+            impressions: Number(item.impressions),
+            clicks: Number(item.clicks),
+          }));
+>>>>>>> 5dda7cdd3d2a5101f340b37078e0a6f51d9478ba
 
           setData(transformedData);
         } else {
@@ -39,6 +47,7 @@ const BarChart = ({ isDashboard = false, selectedAPI }) => {
   }, [selectedAPI]);
 
   const formatXAxisTick = tickValue => {
+<<<<<<< HEAD
     const date = new Date(tickValue);
     const day = date.getDate();
     const month = date.toLocaleString('default', { month: 'short' });
@@ -46,6 +55,15 @@ const BarChart = ({ isDashboard = false, selectedAPI }) => {
     return `${day} ${month}`;
   };
 
+=======
+    
+    const date = new Date(tickValue);
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+  
+    return `${day} ${month}`;
+  };
+>>>>>>> 5dda7cdd3d2a5101f340b37078e0a6f51d9478ba
 
   return (
     <ResponsiveBar

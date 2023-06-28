@@ -3,7 +3,11 @@ import { useTheme } from '@mui/material';
 import { ResponsiveLine } from '@nivo/line';
 import { tokens } from '../theme';
 
+<<<<<<< HEAD
 const LineChart = ({selectedAPI }) => {
+=======
+const LineChart = ({ isCustomLineColors = false, isDashboard = false, selectedAPI }) => {
+>>>>>>> 5dda7cdd3d2a5101f340b37078e0a6f51d9478ba
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -98,7 +102,11 @@ const LineChart = ({selectedAPI }) => {
         },
         tooltip: {
           container: {
+<<<<<<< HEAD
             color: colors.primary[100],
+=======
+            color: colors.primary[5100],
+>>>>>>> 5dda7cdd3d2a5101f340b37078e0a6f51d9478ba
           },
         },
       }}
@@ -127,7 +135,11 @@ const LineChart = ({selectedAPI }) => {
         orient: 'left',
         tickValues: 5,
         tickSize: 5,
+<<<<<<< HEAD
         tickPadding: 8,
+=======
+        tickPadding: 5,
+>>>>>>> 5dda7cdd3d2a5101f340b37078e0a6f51d9478ba
         tickRotation: 0,
         legendOffset: -40,
         legendPosition: 'middle',
@@ -135,6 +147,10 @@ const LineChart = ({selectedAPI }) => {
       enableGridX={true}
       enableGridY={false}
       pointSize={10}
+<<<<<<< HEAD
+=======
+      pointColor={{ theme: 'background' }}
+>>>>>>> 5dda7cdd3d2a5101f340b37078e0a6f51d9478ba
       pointBorderWidth={2}
       pointLabelYOffset={-12}
       enablePointLabel={true} 

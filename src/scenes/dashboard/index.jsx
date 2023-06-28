@@ -34,12 +34,20 @@ const Dashboard = () => {
   useEffect(() => {
     const apis = JSON.parse(localStorage.getItem('apis')) || [];
     setApiOptions(apis);
+<<<<<<< HEAD
 
     // Encontrar a API padrão e definir como selecionada
     const defaultApi = apis.find((api) => api.isDefault);
     setSelectedAPI(defaultApi);
   }, []);
+=======
+>>>>>>> 5dda7cdd3d2a5101f340b37078e0a6f51d9478ba
 
+      // Encontrar a API padrão e definir como selecionada
+      const defaultApi = apis.find((api) => api.isDefault);
+      setSelectedAPI(defaultApi);
+    }, []);
+  
   useEffect(() => {
     fetchData();
   }, [selectedAPI]);
@@ -292,8 +300,13 @@ const Dashboard = () => {
             </Box> */}
 
           </Box>
+<<<<<<< HEAD
           <Box height="270px" m="-20px 0 0 0">
             <LineChart selectedAPI={selectedAPI} />
+=======
+          <Box height="250px" m="-20px 0 0 0">
+            <LineChart isDashboard={true} selectedAPI={selectedAPI}/>
+>>>>>>> 5dda7cdd3d2a5101f340b37078e0a6f51d9478ba
           </Box>
         </Box>
 
@@ -385,8 +398,13 @@ const Dashboard = () => {
             Campanha
           </Typography>
 
+<<<<<<< HEAD
           <Box height="250px" >
             <PieChart selectedAPI={selectedAPI} />
+=======
+          <Box height="200px" >
+            <PieChart selectedAPI={selectedAPI}/>
+>>>>>>> 5dda7cdd3d2a5101f340b37078e0a6f51d9478ba
           </Box>
 
           {/*
@@ -473,7 +491,11 @@ const Dashboard = () => {
             Quantidade de vendas
           </Typography>
           <Box height="280px" mt="-20px">
+<<<<<<< HEAD
             <BarChart isDashboard={true} selectedAPI={selectedAPI} />
+=======
+            <BarChart isDashboard={true} selectedAPI={selectedAPI}/>
+>>>>>>> 5dda7cdd3d2a5101f340b37078e0a6f51d9478ba
           </Box>
         </Box>
 
