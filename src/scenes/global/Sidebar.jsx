@@ -163,14 +163,14 @@ const Sidebar = () => {
               Páginas
             </Typography>
             <Item
-              title="Configuração"
+              title="Configurações"
               to="/configuração"
               icon={<SettingsIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Formulário de perfil"
+              title="Criar Usuários"
               to="/form"
               icon={<PersonOutlinedIcon />}
               selected={selected}
@@ -221,6 +221,7 @@ const Sidebar = () => {
             />
           </Box>
         </Menu>
+      <Typography paddingLeft={10} paddingTop={3} variant="h6" fontWeight="600">Versão Atual: 2.3</Typography>
       </ProSidebar>
     </Box>
   );

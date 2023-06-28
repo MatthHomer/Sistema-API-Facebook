@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material';
 import { ResponsiveBar } from '@nivo/bar';
 import { tokens } from '../theme';
 
-const BarChart = ({ isDashboard = false }) => {
+const BarChart = ({ isDashboard = false, selectedAPI }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -11,37 +11,20 @@ const BarChart = ({ isDashboard = false }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch(
-          'https://graph.facebook.com/v16.0/act_960375240984222/insights?time_increment=1&date_preset{last_year}&level=adset&fields=campaign_id,cpp,campaign_name,account_name,adset_name,impressions,spend,clicks,inline_link_clicks,website_ctr,reach&level=adset&breakdowns=country,region&limit=5000&access_token=EAAQ3iloCnogBAFLuT77GCB4K9LYNqZB5mCZCYf3qu1SQ4ABNn6pEaALB1JJTWY7wuXahZCNSamld2YWXuZCsVUi8cr7wynDiWUmY1dlZA5ZApHPO9XjCm5DeIX9heYz2qLe5z3V0xlF2mUuzqMFxgZC2GjHdnr62MxDjafmKgpLZAOmNxIx0YXHb'
-        );
+      if (!selectedAPI) return;
 
+      try {
+        const response = await fetch(selectedAPI.apiLink);
         const json = await response.json();
 
         if (Array.isArray(json.data) && json.data.length > 0) {
-          const modifiedData = json.data.reduce((acc, item) => {
-            const dateStart = item.date_start.substr(0, 7);
-            const impressions = Number(item.impressions);
-            const clicks = Number(item.clicks);
-
-            if (acc[dateStart]) {
-              acc[dateStart].impressions += impressions;
-              acc[dateStart].clicks += clicks;
-            } else {
-              acc[dateStart] = {
-                impressions,
-                clicks,
-              };
-            }
-
-            return acc;
-          }, {});
-
-          const transformedData = Object.entries(modifiedData).map(([date, { impressions, clicks }]) => ({
-            date_start: date,
-            impressions,
-            clicks,
-          }));
+          const transformedData = json.data
+            .map(item => ({
+              date_start: item.date_start.substr(0, 10),
+              impressions: Number(item.impressions),
+              clicks: Number(item.clicks),
+            }))
+            .filter(item => item.date_start && item.impressions && item.clicks);
 
           setData(transformedData);
         } else {
@@ -53,7 +36,16 @@ const BarChart = ({ isDashboard = false }) => {
     };
 
     fetchData();
-  }, []);
+  }, [selectedAPI]);
+
+  const formatXAxisTick = tickValue => {
+    const date = new Date(tickValue);
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+
+    return `${day} ${month}`;
+  };
+
 
   return (
     <ResponsiveBar
@@ -93,26 +85,6 @@ const BarChart = ({ isDashboard = false }) => {
       valueScale={{ type: 'linear' }}
       indexScale={{ type: 'band', round: true }}
       colors={{ scheme: 'nivo' }}
-      defs={[
-        {
-          id: 'dots',
-          type: 'patternDots',
-          background: 'inherit',
-          color: '#31bcb2',
-          size: 4,
-          padding: 1,
-          stagger: true,
-        },
-        {
-          id: 'lines',
-          type: 'patternLines',
-          background: 'inherit',
-          color: '#eed312',
-          rotation: -45,
-          lineWidth: 6,
-          spacing: 10,
-        },
-      ]}
       borderColor={{
         from: 'color',
         modifiers: [['darker', '1.6']],
@@ -120,22 +92,26 @@ const BarChart = ({ isDashboard = false }) => {
       axisTop={null}
       axisRight={null}
       axisBottom={{
-        tickSize: 5,
+        tickSize: 10,
         tickPadding: 5,
-        tickRotation: 0,
-        legend: isDashboard ? undefined : 'Date', // changed
+        tickRotation: 35,
+        legend: isDashboard ? undefined : 'Date',
         legendPosition: 'middle',
         legendOffset: 32,
+        format: formatXAxisTick
       }}
       axisLeft={{
+        orient: 'left',
         tickSize: 5,
+        tickValues: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : 'Count', // changed
-        legendPosition: 'middle',
+        legend: isDashboard ? undefined : 'Count',
         legendOffset: -40,
+        legendPosition: 'middle',
       }}
       enableLabel={true}
+      enableGridY={false}
       labelSkipWidth={12}
       labelSkipHeight={12}
       labelTextColor={{
@@ -170,6 +146,7 @@ const BarChart = ({ isDashboard = false }) => {
       barAriaLabel={function (e) {
         return e.id + ': ' + e.formattedValue + ' in date: ' + e.indexValue;
       }}
+      groupMode="grouped"
     />
   );
 };

@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material';
 import { ResponsiveLine } from '@nivo/line';
 import { tokens } from '../theme';
 
-const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
+const LineChart = ({selectedAPI }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -11,11 +11,10 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch(
-          'https://graph.facebook.com/v16.0/act_960375240984222/insights?time_increment=1&date_preset{last_year}&level=adset&fields=campaign_id,cpp,campaign_name,account_name,adset_name,impressions,spend,clicks,inline_link_clicks,website_ctr,reach&level=adset&breakdowns=country,region&limit=5000&access_token=EAAQ3iloCnogBAFLuT77GCB4K9LYNqZB5mCZCYf3qu1SQ4ABNn6pEaALB1JJTWY7wuXahZCNSamld2YWXuZCsVUi8cr7wynDiWUmY1dlZA5ZApHPO9XjCm5DeIX9heYz2qLe5z3V0xlF2mUuzqMFxgZC2GjHdnr62MxDjafmKgpLZAOmNxIx0YXHb'
-        );
+      if (!selectedAPI) return;
 
+      try {
+        const response = await fetch(selectedAPI.apiLink);
         const json = await response.json();
 
         if (Array.isArray(json.data) && json.data.length > 0) {
@@ -52,20 +51,21 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
       }
     };
 
+    console.log(selectedAPI);
+
     fetchData();
-  }, []);
+  }, [selectedAPI]);
+
 
   return (
     <ResponsiveLine
       data={[
         {
           id: 'Total Spend',
-          color: 'blue',
           data: Array.isArray(data) ? data.map((item) => ({ x: item.date_start, y: item.spend })) : [],
         },
         {
           id: 'Total Clicks',
-          color: 'red',
           data: Array.isArray(data) ? data.map((item) => ({ x: item.date_start, y: item.clicks })) : [],
         },
       ]}
@@ -73,43 +73,42 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
         axis: {
           domain: {
             line: {
-              stroke: colors.grey[100],
+              stroke: colors.primary[100],
             },
           },
           legend: {
             text: {
-              fill: colors.grey[100],
+              fill: colors.primary[100],
             },
           },
           ticks: {
             line: {
-              stroke: colors.grey[100],
+              stroke: colors.primary[100],
               strokeWidth: 1,
             },
             text: {
-              fill: colors.grey[100],
+              fill: colors.primary[100],
             },
           },
         },
         legends: {
           text: {
-            fill: colors.grey[100],
+            fill: colors.primary[100],
           },
         },
         tooltip: {
           container: {
-            color: colors.primary[500],
+            color: colors.primary[100],
           },
         },
       }}
-      colors={isDashboard ? { datum: 'color' } : { scheme: 'nivo' }}
-      margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+      margin={{ top: 35, right: 110, bottom: 15, left: 55 }} // Ajuste a margem esquerda para 80
       xScale={{ type: 'point' }}
       yScale={{
         type: 'linear',
         min: 'auto',
         max: 'auto',
-        stacked: false,
+        stacked: true,
         reverse: false,
       }}
       yFormat=" >-.2f"
@@ -121,26 +120,22 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
         tickSize: 0,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : 'transportation',
         legendOffset: 36,
         legendPosition: 'middle',
       }}
       axisLeft={{
         orient: 'left',
         tickValues: 5,
-        tickSize: 3,
-        tickPadding: 5,
+        tickSize: 5,
+        tickPadding: 8,
         tickRotation: 0,
-        legend: isDashboard ? undefined : 'count',
         legendOffset: -40,
         legendPosition: 'middle',
       }}
-      enableGridX={false}
+      enableGridX={true}
       enableGridY={false}
-      pointSize={8}
-      pointColor={{ theme: 'background' }}
+      pointSize={10}
       pointBorderWidth={2}
-      pointBorderColor={{ from: 'serieColor' }}
       pointLabelYOffset={-12}
       enablePointLabel={true} 
       useMesh={true}
@@ -155,7 +150,6 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
           itemDirection: 'left-to-right',
           itemWidth: 80,
           itemHeight: 20,
-          itemOpacity: 0.75,
           symbolSize: 12,
           symbolShape: 'circle',
           symbolBorderColor: 'rgba(0, 0, 0, .5)',
